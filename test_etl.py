@@ -3,26 +3,22 @@
 from mylib.query import create_record, read_db, update_ca, delete_ca
 from mylib.extract import extract
 from mylib.transform_load import trans_load
+from pyspark.sql import SparkSession
 
-# Test CRUD
-def test_create_record():
-    '''tests if create_record function works as expected'''
+def test_extract():
+    '''tests if extract function works as expected'''
+    output = extract()
+    assert output == 'data/election-results.csv'
+
+def test_transform_load():
+    '''tests if transform_load function works as expected'''
     extract()
-    trans_load()
-    output = create_record()
-    assert len(output) == 1
+    spark = SparkSession.builder.appName("Election").getOrCreate()
+    output = trans_load(spark)    
+    assert len(output.columns) == 16
+    spark.stop()
 
-def test_read_db():
-    '''tests if read_db function works as expected'''
-    output = read_db()
-    assert len(output) == 5 
-
-def test_update_ca():
-    '''tests if update_ca function works as expected'''
-    output = update_ca()
-    assert len(output) == 1
-
-def test_delete_ca():
-    '''tests if delete_ca function works as expected'''
-    output = delete_ca()
-    assert len(output) == 5
+if __name__ == '__main__':
+    test_extract()
+    test_transform_load()
+    print('\nAll tests passed')

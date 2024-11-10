@@ -3,19 +3,18 @@
 import csv
 import os
 import sqlite3
+from pyspark.sql import SparkSession
 
-PATH = 'data/bad-drivers.csv'
+PATH = 'data/election-results.csv'
 
-def trans_load(path = PATH):
-    '''Takes the csv file and transforms it into a d in SQLite3'''
-    print(os.getcwd()) 
-    payload = csv.reader(open(path, newline=''), delimiter = ',')
-    connection = sqlite3.connect('badDrivers.db')
-    cursor = connection.cursor()
-    cursor.execute('DROP TABLE IF EXISTS badDrivers')
-    cursor.execute('CREATE TABLE badDrivers (state, drivers_count, speeding_percent, alc_percent, no_distraction_percent, no_prev_percent, car_insurance, insurance_losses)')
+def trans_load(spark, path = PATH):
+    '''Takes the csv file and loads at as a Spark df'''
+    # Load Data
+    df = spark.read.csv(path, header=True, inferSchema=True)
+    return df
 
-    cursor.executemany("INSERT INTO badDrivers VALUES (?, ?, ?, ?, ?, ?, ?, ?)", payload)
-    connection.commit()
-    connection.close()
-    return 'badDrivers.db'
+if __name__ == '__main__':
+    spark = SparkSession.builder.appName("Election").getOrCreate()
+    output = trans_load(spark)
+    print('Number of columns:', len(output.columns))
+    spark.stop()
