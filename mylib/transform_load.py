@@ -1,8 +1,5 @@
-'''Takes a csv and loads it as a db'''
+'''Takes a csv and loads it as a spark df'''
 
-import csv
-import os
-import sqlite3
 from pyspark.sql import SparkSession
 
 PATH = 'data/election-results.csv'

@@ -1,8 +1,8 @@
 '''This script is to test the etl.py script'''
 
-from mylib.query import create_record, read_db, update_ca, delete_ca
 from mylib.extract import extract
 from mylib.transform_load import trans_load
+from mylib.query import query
 from pyspark.sql import SparkSession
 
 def test_extract():
@@ -11,14 +11,23 @@ def test_extract():
     assert output == 'data/election-results.csv'
 
 def test_transform_load():
-    '''tests if transform_load function works as expected'''
+    '''tests if trans_load function works as expected'''
     extract()
     spark = SparkSession.builder.appName("Election").getOrCreate()
     output = trans_load(spark)    
     assert len(output.columns) == 16
     spark.stop()
 
+def test_query():
+    '''tests if query function works as expected'''
+    spark = SparkSession.builder.appName("Election").getOrCreate()
+    df = trans_load(spark)
+    output = query(spark, df)
+    assert len(output.columns) == 17
+    spark.stop()
+
 if __name__ == '__main__':
     test_extract()
     test_transform_load()
-    print('\nAll tests passed')
+    test_query()
+    print('All tests passed')
