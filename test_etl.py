@@ -1,9 +1,9 @@
 '''This script is to test the etl.py script'''
 
+from pyspark.sql import SparkSession
 from mylib.extract import extract
 from mylib.transform_load import trans_load
 from mylib.query import query
-from pyspark.sql import SparkSession
 
 def test_extract():
     '''tests if extract function works as expected'''
