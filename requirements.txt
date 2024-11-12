@@ -4,5 +4,4 @@ pytest-cov
 pylint
 ruff
 requests
-os
 pyspark
