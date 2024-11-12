@@ -1,9 +1,9 @@
 '''Use ETL to Extract, Transform, Load and Query election data'''
 
+from pyspark.sql import SparkSession
 from mylib.extract import extract
 from mylib.transform_load import trans_load
 from mylib.query import query
-from pyspark.sql import SparkSession
 
 # Create a Spark session
 spark = SparkSession.builder.appName("Election").getOrCreate()
